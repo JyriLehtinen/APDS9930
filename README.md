@@ -11,8 +11,6 @@ This is a fork of the [library from Sparkfun for the APDS-9960 sensor](https://g
 # DO NOT EMAIL ME IF YOU HAVE AN ISSUE
 It will be deleted without reading. If you have an issue, [create an issue](https://github.com/Depau/APDS9930/issues) here on GitHub.
 
-# Unmaintained
-I'm not going to maintain this library any more. I will merge pull requests, though. Contributions are welcome. Just don't expect anything from me.
 
 ![Avago APDS-9930 Breakout Board](http://img.dxcdn.com/productimages/sku_384037_1.jpg)
 
@@ -89,4 +87,4 @@ Please use, reuse, and modify these files as you see fit. Please maintain attrib
 
 Distributed as-is; no warranty is given.
 
-- Your friends at SparkFun. And Davide Depau :*
+- Your friends at SparkFun. And Davide Depau (Originally) :*
