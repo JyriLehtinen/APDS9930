@@ -42,12 +42,17 @@ APDS9930::~APDS9930()
  *
  * @return True if initialized successfully. False otherwise.
  */
-bool APDS9930::init()
+bool APDS9930::init(TwoWire *theWire, uint8_t i2caddr)
 {
     uint8_t id;
+	_i2c = theWire;
+	_i2c_addr = i2caddr;
 
     /* Initialize I2C */
-    Wire.begin();
+	if(!theWire) {
+		_i2c = &Wire;
+		_i2c->begin();
+	}
      
     /* Read ID register and check against known values for APDS-9930 */
     if( !wireReadDataByte(APDS9930_ID, id) ) {
@@ -1034,9 +1039,9 @@ bool APDS9930::clearAllInts()
  */
 bool APDS9930::wireWriteByte(uint8_t val)
 {
-    Wire.beginTransmission(APDS9930_I2C_ADDR);
-    Wire.write(val);
-    if( Wire.endTransmission() != 0 ) {
+    _i2c->beginTransmission(_i2c_addr);
+    _i2c->write(val);
+    if( _i2c->endTransmission() != 0 ) {
         return false;
     }
     
@@ -1052,10 +1057,10 @@ bool APDS9930::wireWriteByte(uint8_t val)
  */
 bool APDS9930::wireWriteDataByte(uint8_t reg, uint8_t val)
 {
-    Wire.beginTransmission(APDS9930_I2C_ADDR);
-    Wire.write(reg | AUTO_INCREMENT);
-    Wire.write(val);
-    if( Wire.endTransmission() != 0 ) {
+    _i2c->beginTransmission(_i2c_addr);
+    _i2c->write(reg | AUTO_INCREMENT);
+    _i2c->write(val);
+    if( _i2c->endTransmission() != 0 ) {
         return false;
     }
 
@@ -1076,13 +1081,13 @@ bool APDS9930::wireWriteDataBlock(  uint8_t reg,
 {
     unsigned int i;
 
-    Wire.beginTransmission(APDS9930_I2C_ADDR);
-    Wire.write(reg | AUTO_INCREMENT);
+    _i2c->beginTransmission(_i2c_addr);
+    _i2c->write(reg | AUTO_INCREMENT);
     for(i = 0; i < len; i++) {
-        Wire.beginTransmission(APDS9930_I2C_ADDR);
-        Wire.write(val[i]);
+        _i2c->beginTransmission(_i2c_addr);
+        _i2c->write(val[i]);
     }
-    if( Wire.endTransmission() != 0 ) {
+    if( _i2c->endTransmission() != 0 ) {
         return false;
     }
 
@@ -1105,9 +1110,9 @@ bool APDS9930::wireReadDataByte(uint8_t reg, uint8_t &val)
     }
     
     /* Read from register */
-    Wire.requestFrom(APDS9930_I2C_ADDR, 1);
-    while (Wire.available()) {
-        val = Wire.read();
+    _i2c->requestFrom((uint8_t) _i2c_addr, (uint8_t) 1);
+    while (_i2c->available()) {
+        val = _i2c->read();
     }
 
     return true;
@@ -1134,12 +1139,12 @@ int APDS9930::wireReadDataBlock(   uint8_t reg,
     }
     
     /* Read block data */
-    Wire.requestFrom(APDS9930_I2C_ADDR, len);
-    while (Wire.available()) {
+    _i2c->requestFrom((int) _i2c_addr, len);
+    while (_i2c->available()) {
         if (i >= len) {
             return -1;
         }
-        val[i] = Wire.read();
+        val[i] = _i2c->read();
         i++;
     }
 

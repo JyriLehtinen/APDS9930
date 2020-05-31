@@ -155,7 +155,7 @@ public:
     /* Initialization methods */
     APDS9930();
     ~APDS9930();
-    bool init();
+	bool init(TwoWire *theWire=NULL, uint8_t i2caddr=APDS9930_I2C_ADDR);
     uint8_t getMode();
     bool setMode(uint8_t mode, uint8_t enable);
     
@@ -221,6 +221,8 @@ public:
     bool setProximityIntHighThreshold(uint16_t threshold);
     
     /* Raw I2C Commands */
+	TwoWire *_i2c;
+	uint8_t _i2c_addr;
     bool wireWriteByte(uint8_t val);
     bool wireWriteDataByte(uint8_t reg, uint8_t val);
     bool wireWriteDataBlock(uint8_t reg, uint8_t *val, unsigned int len);
